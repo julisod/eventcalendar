@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title th:text="#{eventcalendar}">Tapahtumakalenteri</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="/js/internationalization.js"></script>
+</head>
+<body>
+<div class="container">
+	<div class="col-md-4" style="padding:5px 0">
+		<h2 th:text="#{events}"></h2>
+	</div>
+	<div style="float:left">
+		<h4 th:inline="text">Welcome [[${#httpServletRequest.remoteUser}]]</h4>
+	</div>
+	<div class="col-md-4" style="padding:0px 20px 10px; float:left">
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="Sign Out" class="btn btn-secondary"/>
+		</form>
+		 
+	</div>
+	<div class="col-md-4" style="padding:5px 0; float:right">
+		<select id="locales">
+		    <option value="" th:text="#{lang.change}"></option>
+		    <option value="fi" th:text="#{lang.fi}"></option>
+		    <option value="en" th:text="#{lang.en}"></option>
+		</select>
+	</div>
+    <table class="table table-striped">
+		<tr>
+		    <th th:text="#{name}">Nimi</th>
+		    <th th:text="#{event.desc}">Kuvaus</th>
+		    <th th:text="#{event.type}">Tapahtuman tyyppi</th>
+		    <th th:text="#{event.when}">Ajankohta</th>
+		    <th th:text="#{event.place}">Paikka</th>
+		    <th th:text="#{event.targetgroup}">Kenelle suunnattu</th>
+		    <th th:text="#{event.leader}">Vastuujohtaja</th>
+		    <th sec:authorize="hasAuthority('ADMIN')"> </th>
+		    <th sec:authorize="hasAuthority('ADMIN')"> </th>
+		</tr>  
+    	<tr th:each = "event : ${events}">
+    		<td th:text="${event.name}"></td>
+    		<td th:text="${event.description}"></td>
+    		<td th:text="${event.type}"></td>
+    		<td th:text="${event.getDuration}"></td>
+    		<td th:text="${event.place}"></td>
+    		<td th:text="${event.targetGroup}"></td>
+    		<td th:text="${event.leader.name}"></td>
+    		<td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/delete-event/{id}(id=${event.id})}" class="btn btn-danger" th:text="#{delete}">Delete</a></td> 
+    		<td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/edit-event/{id}(id=${event.id})}" class="btn btn-success" th:text="#{edit}">Edit</a></td> 
+    	</tr>
+     </table> 
+      
+	<div>
+		<h2 th:text="#{event.add}">Lisää tapahtuma</h2>
+		<form th:object="${newevent}" th:action="@{save-event}" action="#" method="post">
+		  	<label for="name" th:text="#{name}">Nimi</label>
+			<input type="text" th:field="*{name}" required/>
+			<br><br>
+			<label for="description">Kuvaus</label>
+			<input type="text" th:field="*{description}" required/>
+			<br><br>
+			<label for="type">Tapahtuman tyyppi</label>
+			<input type="text" th:field="*{type}" required/>
+			<br><br>
+			<label for="date">Alkaa</label>
+			<input type="date" th:field="*{startDate}" required/>
+			<br><br>
+			<label for="endDate">Loppuu</label>
+			<input type="date" th:field="*{endDate}" required/>
+			<br><br>
+			<label for="place">Paikka</label>
+			<input type="text" th:field="*{place}" required/>
+			<br><br>
+			<label for="targetGroup">Kenelle suunnattu</label>
+			<input type="text" th:field="*{targetGroup}" required/>
+			<br><br>
+			<!-- is it possible to get a placeholder? -->
+			<label for="leaders">Vastuujohtaja:</label>
+			  <select name="leaders" th:field="*{leader}" >
+			    <option th:each = "leader : ${leaders}" 
+			    th:value = ${leader.id} th:text = ${leader.name}></option>
+			  </select>
+			 <br>
+			<input type="submit" class="btn btn-primary" value="Add"></input>
+		</form>
+	</div>
+	</div>  	
+</body>
+</html>
