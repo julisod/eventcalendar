@@ -44,12 +44,13 @@ public class RestController {
     }      
     
     // RESTful service to save new event
+	@CrossOrigin
     @RequestMapping(value="/events", method = RequestMethod.POST)
     public @ResponseBody Event saveEventRest(@RequestBody Event event) {	
     	return erepository.save(event);
     }
     
- // RESTful service to get all leaders
+    // RESTful service to get all leaders
     @CrossOrigin
     @RequestMapping(value="/leaders", method = RequestMethod.GET)
     public @ResponseBody List<Leader> leaderListRest() {	
