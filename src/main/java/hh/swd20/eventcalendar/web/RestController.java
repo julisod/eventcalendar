@@ -14,12 +14,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import hh.swd20.eventcalendar.domain.Event;
 import hh.swd20.eventcalendar.domain.EventRepository;
+import hh.swd20.eventcalendar.domain.Leader;
+import hh.swd20.eventcalendar.domain.LeaderRepository;
 
 @Controller
 public class RestController {
 
 	@Autowired
 	private EventRepository erepository;
+	
+	@Autowired
+	private LeaderRepository lrepository;
 	
 	
 	// RESTful service to get all events
@@ -43,4 +48,11 @@ public class RestController {
     public @ResponseBody Event saveEventRest(@RequestBody Event event) {	
     	return erepository.save(event);
     }
+    
+ // RESTful service to get all leaders
+    @CrossOrigin
+    @RequestMapping(value="/leaders", method = RequestMethod.GET)
+    public @ResponseBody List<Leader> leaderListRest() {	
+        return (List<Leader>) lrepository.findAll();
+    }  
 }
